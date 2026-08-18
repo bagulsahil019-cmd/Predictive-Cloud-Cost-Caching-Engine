@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predictive Cloud-Cost Caching Engine Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome for beautiful icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Local styles -->
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="glass-bg-glow"></div>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="logo-container">
+                <div class="logo-icon"><i class="fa-solid fa-bolt"></i></div>
+                <div>
+                    <h1>Predictive Cloud-Cost Caching Engine</h1>
+                    <p class="tagline">Real-Time Cloud Unit Economics Middleware & Traffic Forecaster</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="reset-btn" class="btn btn-danger"><i class="fa-solid fa-rotate-right"></i> Reset Simulation</button>
+            </div>
+        </header>
+
+        <!-- Main Grid Layout -->
+        <div class="dashboard-grid">
+            <!-- Left Panel: Control Center & Simulation Parameters -->
+            <section class="panel control-panel glassmorphic">
+                <div class="panel-header">
+                    <h2><i class="fa-solid fa-sliders"></i> Control Center</h2>
+                    <span class="status-indicator active" id="simulation-status">Simulation Running</span>
+                </div>
+                
+                <!-- Engine Toggles -->
+                <div class="form-group toggle-group">
+                    <label for="predictive-toggle" class="toggle-label">
+                        <span class="toggle-title">Activate Predictive Engine</span>
+                        <span class="toggle-desc">Use Ridge Regression and economic formulas to bypass/write cache dynamically.</span>
+                    </label>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="predictive-toggle" checked>
+                        <label for="predictive-toggle" class="slider-button"></label>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Simulation Sliders -->
+                <h3><i class="fa-solid fa-circle-nodes"></i> Traffic Simulation</h3>
+                
+                <div class="form-group">
+                    <div class="slider-header">
+                        <label for="traffic-rate-slider">Simulated Request Frequency</label>
+                        <span class="slider-value" id="traffic-rate-val">2.0 reqs/sec</span>
+                    </div>
+                    <input type="range" id="traffic-rate-slider" min="0.5" max="8.0" step="0.5" value="2.0" class="slider">
+                </div>
+
+                <div class="divider"></div>
+
+                <h3><i class="fa-solid fa-dollar-sign"></i> Unit Pricing Parameters</h3>
+
+                <div class="form-group">
+                    <div class="slider-header">
+                        <label for="db-compute-slider">Database Compute Cost ($/query)</label>
+                        <span class="slider-value" id="db-compute-val">$0.0050</span>
+                    </div>
+                    <input type="range" id="db-compute-slider" min="0.001" max="0.020" step="0.001" value="0.005" class="slider">
+                </div>
+
+                <div class="form-group">
+                    <div class="slider-header">
+                        <label for="db-egress-slider">Database Egress Cost ($/KB)</label>
+                        <span class="slider-value" id="db-egress-val">$0.00010</span>
+                    </div>
+                    <input type="range" id="db-egress-slider" min="0.00001" max="0.0005" step="0.00001" value="0.0001" class="slider">
+                </div>
+
+                <div class="form-group">
+                    <div class="slider-header">
+                        <label for="cache-storage-slider">Cache Storage Price ($/KB/window)</label>
+                        <span class="slider-value" id="cache-storage-val">$0.00050</span>
+                    </div>
+                    <input type="range" id="cache-storage-slider" min="0.00005" max="0.005" step="0.00005" value="0.0005" class="slider">
+                </div>
+
+                <div class="form-group">
+                    <div class="slider-header">
+                        <label for="cache-write-slider">Cache Write Op Cost ($/write)</label>
+                        <span class="slider-value" id="cache-write-val">$0.0010</span>
+                    </div>
+                    <input type="range" id="cache-write-slider" min="0.0001" max="0.005" step="0.0001" value="0.001" class="slider">
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Simulation Info Table -->
+                <div class="mock-keys-info">
+                    <h4>Mock Database Dataset Keys & Payload Sizes</h4>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Query / Key</th>
+                                    <th>Mock Size</th>
+                                    <th>Prob.</th>
+                                    <th>Caching Target</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code class="key-tag blue">image_metadata</code></td>
+                                    <td>5 KB</td>
+                                    <td>20%</td>
+                                    <td class="text-green">Always Cache (Tiny size)</td>
+                                </tr>
+                                <tr>
+                                    <td><code class="key-tag green">user_profile</code></td>
+                                    <td>10 KB</td>
+                                    <td>60%</td>
+                                    <td class="text-green">Always Cache (High Freq)</td>
+                                </tr>
+                                <tr>
+                                    <td><code class="key-tag orange">search_products</code></td>
+                                    <td>150 KB</td>
+                                    <td>12%</td>
+                                    <td class="text-yellow">Dynamic (Borderline)</td>
+                                </tr>
+                                <tr>
+                                    <td><code class="key-tag purple">recommendations_feed</code></td>
+                                    <td>800 KB</td>
+                                    <td>6%</td>
+                                    <td class="text-yellow">Dynamic (Borderline)</td>
+                                </tr>
+                                <tr>
+                                    <td><code class="key-tag pink">analytics_report</code></td>
+                                    <td>5000 KB</td>
+                                    <td>2%</td>
+                                    <td class="text-red">Bypass (Huge size/Low Freq)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Telemetry & Visualizations -->
+            <div class="dashboard-right">
+                <!-- Metrics Bar -->
+                <section class="metrics-grid">
+                    <div class="metric-card glassmorphic">
+                        <div class="metric-icon"><i class="fa-solid fa-chart-line"></i></div>
+                        <div class="metric-data">
+                            <span class="metric-label">Cache Hit Ratio</span>
+                            <span class="metric-value" id="hit-ratio-val">0.0%</span>
+                        </div>
+                    </div>
+                    <div class="metric-card glassmorphic">
+                        <div class="metric-icon"><i class="fa-solid fa-clock"></i></div>
+                        <div class="metric-data">
+                            <span class="metric-label">Avg Query Latency</span>
+                            <span class="metric-value" id="avg-latency-val">0.0 ms</span>
+                        </div>
+                    </div>
+                    <div class="metric-card glassmorphic highlight">
+                        <div class="metric-icon"><i class="fa-solid fa-piggy-bank"></i></div>
+                        <div class="metric-data">
+                            <span class="metric-label">Predictive Savings vs DB</span>
+                            <span class="metric-value text-glow" id="savings-val">0.0%</span>
+                        </div>
+                    </div>
+                    <div class="metric-card glassmorphic highlight-cyan">
+                        <div class="metric-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+                        <div class="metric-data">
+                            <span class="metric-label">Total Latency Saved</span>
+                            <span class="metric-value text-glow-cyan" id="latency-saved-val">0.0s</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Chart Panel -->
+                <section class="panel chart-panel glassmorphic">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-chart-area"></i> Cumulative Cloud Infrastructure Cost Comparison ($)</h2>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="legend-dot direct"></span>Direct DB Fetch Only</span>
+                            <span class="legend-item"><span class="legend-dot standard"></span>Standard Cache Routing</span>
+                            <span class="legend-item"><span class="legend-dot predictive"></span>Predictive Cache Routing</span>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="costChart"></canvas>
+                    </div>
+                </section>
+
+                <!-- Telemetry Scrolling Logs -->
+                <section class="panel logs-panel glassmorphic">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-terminal"></i> Telemetry & Engine Decisions Log Stream</h2>
+                        <span class="log-count" id="log-count">0 requests</span>
+                    </div>
+                    <div class="logs-container" id="logs-container">
+                        <div class="empty-logs">
+                            <i class="fa-solid fa-chart-simple"></i>
+                            <p>Simulation active. Logs will stream here dynamically as request traffic starts...</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="/app.js"></script>
+</body>
+</html>
